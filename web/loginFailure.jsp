@@ -28,6 +28,16 @@
                   <% } %>
           </p>
 
+          <div class="error-tips">
+            <% if (errorMsg !=null && errorMsg.contains("验证码")) { %>
+              <p>提示：请确认您输入的验证码正确无误。如果看不清，可以点击验证码图片刷新。</p>
+              <% } else if (errorMsg !=null && errorMsg.contains("用户名或密码")) { %>
+                <p>提示：请确认您输入的学号和密码正确无误。</p>
+                <% } else { %>
+                  <p>提示：请确认所有信息填写正确，然后重试。</p>
+                  <% } %>
+          </div>
+
           <a href="LoginController" class="btn">重新登录</a>
       </div>
     </div>

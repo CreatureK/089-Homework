@@ -127,14 +127,25 @@ function updateDepartments(school) {
 function refreshVerifyCode() {
   const verifyCodeImg = document.getElementById('verifyCodeImg');
   if (verifyCodeImg) {
-    // 添加时间戳防止缓存
-    verifyCodeImg.src = 'VerifyCodeController?' + new Date().getTime();
+    // 添加随机时间戳参数防止缓存
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 1000);
+    verifyCodeImg.src = 'VerifyCodeController?t=' + timestamp + '&r=' + randomNum;
+
+    console.log('刷新验证码：' + verifyCodeImg.src);
 
     // 添加刷新动画效果
     verifyCodeImg.classList.add('refreshing');
     setTimeout(() => {
       verifyCodeImg.classList.remove('refreshing');
     }, 500);
+
+    // 清空验证码输入框
+    const verifyCodeInput = document.getElementById('verifyCode');
+    if (verifyCodeInput) {
+      verifyCodeInput.value = '';
+      verifyCodeInput.focus();
+    }
   }
 }
 
