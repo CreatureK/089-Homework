@@ -29,4 +29,14 @@
         <url-pattern>/VerifyCodeController</url-pattern>
     </servlet-mapping>
     
+    <!-- 订单控制器 -->
+    <servlet>
+        <servlet-name>OrderController</servlet-name>
+        <servlet-class>controller.OrderController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OrderController</servlet-name>
+        <url-pattern>/OrderController</url-pattern>
+    </servlet-mapping>
+    
 </web-app>

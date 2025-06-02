@@ -1,0 +1,41 @@
+/* orderFailure.css */
+
+.error-container {
+  text-align: center;
+  padding: 50px 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.error-icon {
+  font-size: 64px;
+  color: #ff3b30;
+  margin-bottom: 20px;
+}
+
+.error-title {
+  font-size: 24px;
+  color: #1d1d1f;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: #86868b;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.back-link {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #0071e3;
+  color: #fff;
+  border-radius: 980px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.back-link:hover {
+  background: #0077e6;
+}

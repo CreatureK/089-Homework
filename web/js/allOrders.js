@@ -48,4 +48,197 @@ document.addEventListener('DOMContentLoaded', function () {
       orderContainer.style.opacity = '1';
     }, 100);
   }
+
+  // 订单成功消息自动消失
+  const successMessage = document.querySelector('.success-message');
+  if (successMessage) {
+    setTimeout(() => {
+      successMessage.style.display = 'none';
+    }, 5000);
+  }
+});
+
+/**
+ * 单个订单删除
+ * @param {number} orderId - 订单ID
+ */
+function deleteOrder(orderId) {
+  if (confirm('确定要删除这个订单吗？')) {
+    var form = document.getElementById('orderForm');
+    // 清空之前选中的复选框
+    var checkboxes = form.querySelectorAll('input[name="selectedOrders"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+
+    // 设置当前订单为选中
+    var orderCheckbox = form.querySelector('input[value="' + orderId + '"]');
+    if (orderCheckbox) orderCheckbox.checked = true;
+
+    form.action = 'OrderController';
+    form.method = 'post';
+
+    // 创建并添加action参数
+    var actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = 'deleteOrders';
+    form.appendChild(actionInput);
+
+    // 提交表单
+    form.submit();
+  }
+}
+
+/**
+ * 单个订单取消
+ * @param {number} orderId - 订单ID
+ */
+function cancelOrder(orderId) {
+  if (confirm('确定要取消这个订单吗？')) {
+    var form = document.getElementById('orderForm');
+    // 清空之前选中的复选框
+    var checkboxes = form.querySelectorAll('input[name="selectedOrders"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+
+    // 设置当前订单为选中
+    var orderCheckbox = form.querySelector('input[value="' + orderId + '"]');
+    if (orderCheckbox) orderCheckbox.checked = true;
+
+    form.action = 'OrderController';
+    form.method = 'post';
+
+    // 创建并添加action参数
+    var actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = 'cancelOrders';
+    form.appendChild(actionInput);
+
+    // 提交表单
+    form.submit();
+  }
+}
+
+/**
+ * 批量操作相关事件处理
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  // 批量删除订单
+  var batchDeleteBtn = document.getElementById('batchDeleteBtn');
+  if (batchDeleteBtn) {
+    batchDeleteBtn.addEventListener('click', function () {
+      var form = document.getElementById('orderForm');
+      var selectedOrders = form.querySelectorAll('input[name="selectedOrders"]:checked');
+
+      if (selectedOrders.length === 0) {
+        alert('请至少选择一个订单');
+        return;
+      }
+
+      if (confirm('确定要删除选中的 ' + selectedOrders.length + ' 个订单吗？')) {
+        form.action = 'OrderController';
+        form.method = 'post';
+
+        // 创建并添加action参数
+        var actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'deleteOrders';
+        form.appendChild(actionInput);
+
+        // 提交表单
+        form.submit();
+      }
+    });
+  }
+
+  // 批量取消订单
+  var batchCancelBtn = document.getElementById('batchCancelBtn');
+  if (batchCancelBtn) {
+    batchCancelBtn.addEventListener('click', function () {
+      var form = document.getElementById('orderForm');
+      var selectedOrders = form.querySelectorAll('input[name="selectedOrders"]:checked');
+
+      if (selectedOrders.length === 0) {
+        alert('请至少选择一个订单');
+        return;
+      }
+
+      if (confirm('确定要取消选中的 ' + selectedOrders.length + ' 个订单吗？')) {
+        form.action = 'OrderController';
+        form.method = 'post';
+
+        // 创建并添加action参数
+        var actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'cancelOrders';
+        form.appendChild(actionInput);
+
+        // 提交表单
+        form.submit();
+      }
+    });
+  }
+
+  // 全局删除订单按钮
+  var deleteOrderBtn = document.getElementById('deleteOrderBtn');
+  if (deleteOrderBtn) {
+    deleteOrderBtn.addEventListener('click', function () {
+      var form = document.getElementById('orderForm');
+      var selectedOrders = form.querySelectorAll('input[name="selectedOrders"]:checked');
+
+      if (selectedOrders.length === 0) {
+        alert('请选择要删除的订单');
+        return;
+      }
+
+      if (confirm('确定要删除选中的 ' + selectedOrders.length + ' 个订单吗？')) {
+        form.action = 'OrderController';
+        form.method = 'post';
+
+        // 创建并添加action参数
+        var actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'deleteOrders';
+        form.appendChild(actionInput);
+
+        // 提交表单
+        form.submit();
+      }
+    });
+  }
+
+  // 全局取消订单按钮
+  var cancelOrderBtn = document.getElementById('cancelOrderBtn');
+  if (cancelOrderBtn) {
+    cancelOrderBtn.addEventListener('click', function () {
+      var form = document.getElementById('orderForm');
+      var selectedOrders = form.querySelectorAll('input[name="selectedOrders"]:checked');
+
+      if (selectedOrders.length === 0) {
+        alert('请选择要取消的订单');
+        return;
+      }
+
+      if (confirm('确定要取消选中的 ' + selectedOrders.length + ' 个订单吗？')) {
+        form.action = 'OrderController';
+        form.method = 'post';
+
+        // 创建并添加action参数
+        var actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'cancelOrders';
+        form.appendChild(actionInput);
+
+        // 提交表单
+        form.submit();
+      }
+    });
+  }
 }); 

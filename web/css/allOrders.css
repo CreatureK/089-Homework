@@ -247,3 +247,104 @@ h2 {
     font-size: 16px;
   }
 }
+
+/* 订单操作按钮样式 */
+.order-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #d2d2d7;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.delete-btn {
+  background-color: #ff3b30;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #ff453a;
+}
+
+.cancel-btn {
+  background-color: #ff9500;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background-color: #ffa526;
+}
+
+.order-checkbox {
+  margin-right: 5px;
+  transform: scale(1.2);
+}
+
+.order-checkbox-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.bulk-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.success-message {
+  background-color: #d1f0ea;
+  color: #137765;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  animation: fadeOut 5s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 订单卡片下方的全局操作按钮 */
+.order-actions-global {
+  margin-top: 30px;
+  justify-content: center;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.order-actions-global .action-btn {
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+}

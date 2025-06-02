@@ -58,54 +58,84 @@
                           </div>
                         </div>
 
-                        <h2 class="section-title">全部订单</h2>
-
-                        <% if (orders.isEmpty()) { %>
-                          <div style="text-align: center; padding: 50px 0;">
-                            <p><i class="fas fa-shopping-basket"
-                                style="font-size: 64px; color: #86868b; margin-bottom: 20px;"></i></p>
-                            <p style="font-size: 24px; color: #1d1d1f; margin-bottom: 10px;">暂无订单</p>
-                            <p style="color: #86868b;">您当前没有任何订单记录。</p>
+                        <% // 显示成功消息（如果有）
+                          String successMsg=(String) session.getAttribute("successMsg"); if (successMsg
+                          !=null && !successMsg.isEmpty()) { // 显示成功消息后清除session中的消息
+                          session.removeAttribute("successMsg"); %>
+                          <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <%= successMsg %>
                           </div>
-                          <% } else { %>
-                            <div class="order-cards">
-                              <% for (Order order : orders) { %>
-                                <div class="order-card">
-                                  <div class="order-header">
-                                    <span class="order-id">订单ID：<%= order.getOId() %></span>
-                                    <span class="order-status <%= getStatusClass(order.getStatus()) %>">
-                                      <%= order.getStatus() %>
-                                    </span>
-                                  </div>
-                                  <div class="order-body">
-                                    <div class="order-info">
-                                      <div class="order-time">下单时间：<%= sdf.format(order.getOTime()) %>
-                                      </div>
+                          <% } %>
 
-                                      <% if (order.getOrderDetails() !=null && !order.getOrderDetails().isEmpty()) { %>
-                                        <div class="order-items">
-                                          <div>订购菜肴：</div>
-                                          <ul class="food-list">
-                                            <% for (OrderDetail detail : order.getOrderDetails()) { %>
-                                              <li>
-                                                <%= detail.getFood().getFName() %>
-                                                  - ¥<%= String.format("%.2f", detail.getFood().getFPrice()) %>
-                                                    × <%= detail.getQuantity() %>
-                                              </li>
-                                              <% } %>
-                                          </ul>
-                                        </div>
-                                        <% } %>
+                            <h2 class="section-title">全部订单</h2>
 
-                                          <div class="order-price">订单总价：¥<%= String.format("%.2f",
-                                              order.getTotalPrice()) %>
+                            <% if (orders.isEmpty()) { %>
+                              <div style="text-align: center; padding: 50px 0;">
+                                <p><i class="fas fa-shopping-basket"
+                                    style="font-size: 64px; color: #86868b; margin-bottom: 20px;"></i></p>
+                                <p style="font-size: 24px; color: #1d1d1f; margin-bottom: 10px;">暂无订单</p>
+                                <p style="color: #86868b;">您当前没有任何订单记录。</p>
+                              </div>
+                              <% } else { %>
+                                <form id="orderForm" method="post">
+
+                                  <div class="order-cards">
+                                    <% for (Order order : orders) { %>
+                                      <div class="order-card">
+                                        <div class="order-header">
+                                          <div style="display: flex; align-items: center;">
+                                            <label class="order-checkbox-label">
+                                              <input type="checkbox" name="selectedOrders" value="<%= order.getOId() %>"
+                                                class="order-checkbox">
+                                              <span class="order-id">订单ID：<%= order.getOId() %></span>
+                                            </label>
                                           </div>
-                                    </div>
+                                          <span class="order-status <%= getStatusClass(order.getStatus()) %>">
+                                            <%= order.getStatus() %>
+                                          </span>
+                                        </div>
+                                        <div class="order-body">
+                                          <div class="order-info">
+                                            <div class="order-time">下单时间：<%= sdf.format(order.getOTime()) %>
+                                            </div>
+
+                                            <% if (order.getOrderDetails() !=null && !order.getOrderDetails().isEmpty())
+                                              { %>
+                                              <div class="order-items">
+                                                <div>订购菜肴：</div>
+                                                <ul class="food-list">
+                                                  <% for (OrderDetail detail : order.getOrderDetails()) { %>
+                                                    <li>
+                                                      <%= detail.getFood().getFName() %>
+                                                        - ¥<%= String.format("%.2f", detail.getFood().getFPrice()) %>
+                                                          × <%= detail.getQuantity() %>
+                                                    </li>
+                                                    <% } %>
+                                                </ul>
+                                              </div>
+                                              <% } %>
+
+                                                <div class="order-price">订单总价：¥<%= String.format("%.2f",
+                                                    order.getTotalPrice()) %>
+                                                </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <% } %>
                                   </div>
-                                </div>
+
+                                  <!-- 添加到订单卡片下方的操作按钮 -->
+                                  <div class="order-actions order-actions-global">
+                                    <button type="button" id="deleteOrderBtn" class="action-btn delete-btn">
+                                      删除订单
+                                    </button>
+                                    <button type="button" id="cancelOrderBtn" class="action-btn cancel-btn">
+                                      撤销订单
+                                    </button>
+                                  </div>
+                                </form>
                                 <% } %>
-                            </div>
-                            <% } %>
                       </div>
 
                       <%! // 根据订单状态返回对应的CSS类名
