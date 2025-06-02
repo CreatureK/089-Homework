@@ -325,4 +325,242 @@ public class OrderDAO {
       this.sum = sum;
     }
   }
+
+  /**
+   * 删除订单（针对已完成状态的订单）
+   * 
+   * @param orderId 订单ID
+   * @return 是否成功删除
+   */
+  public boolean deleteOrder(int orderId) {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    boolean success = false;
+
+    try {
+      conn = DBUtil.getConnection();
+
+      // 首先检查订单状态是否为"已完成"
+      String checkSql = "SELECT status FROM `order` WHERE oId = ?";
+      pstmt = conn.prepareStatement(checkSql);
+      pstmt.setInt(1, orderId);
+      rs = pstmt.executeQuery();
+
+      if (rs.next() && "已完成".equals(rs.getString("status"))) {
+        rs.close();
+        pstmt.close();
+
+        // 开启事务
+        conn.setAutoCommit(false);
+
+        // 先删除订单详情
+        String deleteDetailSql = "DELETE FROM orderDetail WHERE oId = ?";
+        pstmt = conn.prepareStatement(deleteDetailSql);
+        pstmt.setInt(1, orderId);
+        pstmt.executeUpdate();
+
+        // 再删除订单主表记录
+        String deleteOrderSql = "DELETE FROM `order` WHERE oId = ?";
+        pstmt = conn.prepareStatement(deleteOrderSql);
+        pstmt.setInt(1, orderId);
+        int result = pstmt.executeUpdate();
+
+        // 提交事务
+        conn.commit();
+        success = result > 0;
+      }
+    } catch (SQLException e) {
+      try {
+        if (conn != null) {
+          conn.rollback(); // 发生异常时回滚事务
+        }
+      } catch (SQLException ex) {
+        ex.printStackTrace();
+      }
+      e.printStackTrace();
+    } finally {
+      try {
+        if (conn != null) {
+          conn.setAutoCommit(true); // 恢复自动提交
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      DBUtil.close(conn, pstmt, rs);
+    }
+
+    return success;
+  }
+
+  /**
+   * 取消订单（针对处理中状态的订单）
+   * 
+   * @param orderId 订单ID
+   * @return 是否成功取消
+   */
+  public boolean cancelOrder(int orderId) {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    boolean success = false;
+
+    try {
+      conn = DBUtil.getConnection();
+
+      // 首先检查订单状态是否为"处理中"
+      String checkSql = "SELECT status FROM `order` WHERE oId = ?";
+      pstmt = conn.prepareStatement(checkSql);
+      pstmt.setInt(1, orderId);
+      rs = pstmt.executeQuery();
+
+      if (rs.next() && "处理中".equals(rs.getString("status"))) {
+        rs.close();
+        pstmt.close();
+
+        // 更新订单状态为"已取消"
+        String updateSql = "UPDATE `order` SET status = '已取消' WHERE oId = ?";
+        pstmt = conn.prepareStatement(updateSql);
+        pstmt.setInt(1, orderId);
+        int result = pstmt.executeUpdate();
+        success = result > 0;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      DBUtil.close(conn, pstmt, rs);
+    }
+
+    return success;
+  }
+
+  /**
+   * 批量删除订单（针对已完成状态的订单）
+   * 
+   * @param orderIds 订单ID数组
+   * @return 成功删除的订单ID列表
+   */
+  public List<Integer> batchDeleteOrders(int[] orderIds) {
+    List<Integer> successfulIds = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = DBUtil.getConnection();
+
+      for (int orderId : orderIds) {
+        // 检查订单状态是否为"已完成"
+        String checkSql = "SELECT status FROM `order` WHERE oId = ?";
+        pstmt = conn.prepareStatement(checkSql);
+        pstmt.setInt(1, orderId);
+        rs = pstmt.executeQuery();
+
+        if (rs.next() && "已完成".equals(rs.getString("status"))) {
+          rs.close();
+          pstmt.close();
+
+          // 开启事务
+          conn.setAutoCommit(false);
+
+          try {
+            // 先删除订单详情
+            String deleteDetailSql = "DELETE FROM orderDetail WHERE oId = ?";
+            pstmt = conn.prepareStatement(deleteDetailSql);
+            pstmt.setInt(1, orderId);
+            pstmt.executeUpdate();
+
+            // 再删除订单主表记录
+            String deleteOrderSql = "DELETE FROM `order` WHERE oId = ?";
+            pstmt = conn.prepareStatement(deleteOrderSql);
+            pstmt.setInt(1, orderId);
+            int result = pstmt.executeUpdate();
+
+            // 提交事务
+            conn.commit();
+
+            if (result > 0) {
+              successfulIds.add(orderId);
+            }
+          } catch (SQLException e) {
+            // 发生异常，回滚事务
+            try {
+              conn.rollback();
+            } catch (SQLException ex) {
+              ex.printStackTrace();
+            }
+            e.printStackTrace();
+          } finally {
+            try {
+              conn.setAutoCommit(true); // 恢复自动提交
+            } catch (SQLException ex) {
+              ex.printStackTrace();
+            }
+          }
+        } else {
+          if (rs != null)
+            rs.close();
+          if (pstmt != null)
+            pstmt.close();
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      DBUtil.close(conn, pstmt, rs);
+    }
+
+    return successfulIds;
+  }
+
+  /**
+   * 批量取消订单（针对处理中状态的订单）
+   * 
+   * @param orderIds 订单ID数组
+   * @return 成功取消的订单ID列表
+   */
+  public List<Integer> batchCancelOrders(int[] orderIds) {
+    List<Integer> successfulIds = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = DBUtil.getConnection();
+
+      for (int orderId : orderIds) {
+        // 检查订单状态是否为"处理中"
+        String checkSql = "SELECT status FROM `order` WHERE oId = ?";
+        pstmt = conn.prepareStatement(checkSql);
+        pstmt.setInt(1, orderId);
+        rs = pstmt.executeQuery();
+
+        if (rs.next() && "处理中".equals(rs.getString("status"))) {
+          rs.close();
+          pstmt.close();
+
+          // 更新订单状态为"已取消"
+          String updateSql = "UPDATE `order` SET status = '已取消' WHERE oId = ?";
+          pstmt = conn.prepareStatement(updateSql);
+          pstmt.setInt(1, orderId);
+          int result = pstmt.executeUpdate();
+
+          if (result > 0) {
+            successfulIds.add(orderId);
+          }
+        } else {
+          if (rs != null)
+            rs.close();
+          if (pstmt != null)
+            pstmt.close();
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      DBUtil.close(conn, pstmt, rs);
+    }
+
+    return successfulIds;
+  }
 }

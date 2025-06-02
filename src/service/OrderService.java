@@ -65,4 +65,44 @@ public class OrderService {
 
     return orders;
   }
+
+  /**
+   * 删除订单（针对已完成状态的订单）
+   * 
+   * @param orderId 订单ID
+   * @return 删除结果：true成功，false失败
+   */
+  public boolean deleteOrder(int orderId) {
+    return orderDAO.deleteOrder(orderId);
+  }
+
+  /**
+   * 批量删除订单（针对已完成状态的订单）
+   * 
+   * @param orderIds 订单ID数组
+   * @return 成功删除的订单ID列表
+   */
+  public List<Integer> batchDeleteOrders(int[] orderIds) {
+    return orderDAO.batchDeleteOrders(orderIds);
+  }
+
+  /**
+   * 取消订单（针对处理中状态的订单）
+   * 
+   * @param orderId 订单ID
+   * @return 取消结果：true成功，false失败
+   */
+  public boolean cancelOrder(int orderId) {
+    return orderDAO.cancelOrder(orderId);
+  }
+
+  /**
+   * 批量取消订单（针对处理中状态的订单）
+   * 
+   * @param orderIds 订单ID数组
+   * @return 成功取消的订单ID列表
+   */
+  public List<Integer> batchCancelOrders(int[] orderIds) {
+    return orderDAO.batchCancelOrders(orderIds);
+  }
 }
