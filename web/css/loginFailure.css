@@ -1,0 +1,86 @@
+/* 全局样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* 登录失败页面样式 */
+.error-container {
+  text-align: center;
+  padding: 60px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80vh;
+  justify-content: center;
+}
+
+.error-icon {
+  font-size: 64px;
+  color: #ff3b30;
+  margin-bottom: 20px;
+}
+
+.error-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1d1d1f;
+}
+
+.error-message {
+  font-size: 18px;
+  color: #86868b;
+  margin-bottom: 30px;
+  max-width: 600px;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #0071e3;
+  color: #fff;
+  border-radius: 980px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #0077e6;
+}
+
+.btn:active {
+  background: #0062c3;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .error-title {
+    font-size: 24px;
+  }
+
+  .error-message {
+    font-size: 16px;
+  }
+}

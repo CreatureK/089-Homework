@@ -1,0 +1,203 @@
+/* 全局样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* 标题样式 */
+h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -0.015em;
+  color: #1d1d1f;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #0071e3;
+  color: #fff;
+  border-radius: 980px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #0077e6;
+}
+
+.btn:active {
+  background: #0062c3;
+}
+
+/* 订单列表页面样式 */
+.header {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid #d2d2d7;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.orders-container {
+  padding: 40px 0;
+}
+
+.section-title {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.order-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.order-card {
+  background-color: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #d2d2d7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.order-id {
+  font-weight: 500;
+  color: #1d1d1f;
+}
+
+.order-status {
+  padding: 4px 10px;
+  border-radius: 980px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-processing {
+  background-color: #ffe8b9;
+  color: #b07d02;
+}
+
+.status-completed {
+  background-color: #d1f0ea;
+  color: #137765;
+}
+
+.status-canceled {
+  background-color: #ffd7d7;
+  color: #c53030;
+}
+
+.order-body {
+  padding: 20px;
+}
+
+.order-info {
+  margin-bottom: 15px;
+}
+
+.order-time,
+.order-price {
+  color: #86868b;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.order-price {
+  font-weight: 500;
+  color: #1d1d1f;
+  font-size: 18px;
+}
+
+.order-details-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: transparent;
+  color: #0071e3;
+  border: 1px solid #0071e3;
+  border-radius: 980px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.order-details-btn:hover {
+  background: #0071e3;
+  color: white;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 28px;
+  }
+
+  .order-cards {
+    grid-template-columns: 1fr;
+  }
+}
