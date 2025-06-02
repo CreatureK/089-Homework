@@ -9,7 +9,7 @@
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>我的订单 - 学生点餐系统</title>
+            <title>我的订单 - 在线外卖订餐</title>
             <link rel="stylesheet" href="css/allOrders.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
           </head>
@@ -30,7 +30,7 @@
                 <header class="header">
                   <div class="container header-content">
                     <div class="logo">
-                      <i class="fas fa-utensils"></i> 学生点餐系统
+                      <i class="fas fa-utensils"></i> 在线外卖订餐
                     </div>
                     <div class="user-info">
                       <span class="user-name"><i class="fas fa-user"></i>

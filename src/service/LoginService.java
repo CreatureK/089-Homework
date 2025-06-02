@@ -50,7 +50,8 @@ public class LoginService {
    * @return 学院列表
    */
   public List<String> getAllSchools() {
-    return userDAO.getAllSchools();
+    // 使用SchoolDataService代替数据库查询
+    return SchoolDataService.getAllSchoolNames();
   }
 
   /**
@@ -60,7 +61,8 @@ public class LoginService {
    * @return 系列表
    */
   public List<String> getDepartmentsBySchool(String school) {
-    return userDAO.getDepartmentsBySchool(school);
+    // 使用SchoolDataService代替数据库查询
+    return SchoolDataService.getDepartmentNamesBySchool(school);
   }
 
   /**
@@ -69,6 +71,7 @@ public class LoginService {
    * @return 学院和系的映射
    */
   public Map<String, List<String>> getAllSchoolsAndDepartments() {
-    return userDAO.getAllSchoolsAndDepartments();
+    // 使用SchoolDataService代替数据库查询
+    return SchoolDataService.getAllSchoolsAndDepartments();
   }
 }

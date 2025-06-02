@@ -6,6 +6,35 @@ document.addEventListener('DOMContentLoaded', function () {
   const schoolSelect = document.getElementById('uSchool');
   const departmentSelect = document.getElementById('uDepartment');
   const verifyCodeImg = document.getElementById('verifyCodeImg');
+  const passwordToggle = document.getElementById('passwordToggle');
+  const passwordInput = document.getElementById('uPw');
+
+  // 密码显示/隐藏切换功能
+  if (passwordToggle && passwordInput) {
+    passwordToggle.addEventListener('click', function () {
+      // 切换密码显示/隐藏状态
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+
+      // 切换图标
+      const icon = this.querySelector('i');
+      if (type === 'text') {
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+        this.setAttribute('title', '隐藏密码');
+      } else {
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+        this.setAttribute('title', '显示密码');
+      }
+
+      // 添加动画效果
+      icon.classList.add('password-toggle-animate');
+      setTimeout(() => {
+        icon.classList.remove('password-toggle-animate');
+      }, 300);
+    });
+  }
 
   // 学院选择改变时更新系选项
   if (schoolSelect && departmentSelect) {
@@ -49,8 +78,18 @@ function updateDepartments(school) {
   }
 
   // 发送AJAX请求获取所选学院的系列表
-  fetch('LoginController?action=getDepartments&school=' + encodeURIComponent(school))
-    .then(response => response.json())
+  fetch('LoginController?action=getDepartments&school=' + encodeURIComponent(school), {
+    method: 'GET',
+    headers: {
+      'Cache-Control': 'no-cache'
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('网络响应错误');
+      }
+      return response.json();
+    })
     .then(departments => {
       // 清空当前选项
       departmentSelect.innerHTML = '';
@@ -68,9 +107,17 @@ function updateDepartments(school) {
         option.textContent = dept;
         departmentSelect.appendChild(option);
       });
+
+      // 添加选择后的交互效果
+      departmentSelect.classList.add('active');
+      setTimeout(() => {
+        departmentSelect.classList.remove('active');
+      }, 300);
     })
     .catch(error => {
       console.error('获取系列表失败:', error);
+      // 显示错误信息
+      departmentSelect.innerHTML = '<option value="">加载失败，请重试</option>';
     });
 }
 
@@ -82,6 +129,12 @@ function refreshVerifyCode() {
   if (verifyCodeImg) {
     // 添加时间戳防止缓存
     verifyCodeImg.src = 'VerifyCodeController?' + new Date().getTime();
+
+    // 添加刷新动画效果
+    verifyCodeImg.classList.add('refreshing');
+    setTimeout(() => {
+      verifyCodeImg.classList.remove('refreshing');
+    }, 500);
   }
 }
 
@@ -160,7 +213,9 @@ function showError(element, message) {
   errorDiv.style.marginTop = '5px';
   errorDiv.textContent = message;
 
-  element.parentNode.appendChild(errorDiv);
+  // 根据元素是否在密码容器内调整错误信息的添加位置
+  const parent = element.closest('.password-container') || element.parentNode;
+  parent.appendChild(errorDiv);
 }
 
 /**
@@ -169,7 +224,8 @@ function showError(element, message) {
  */
 function removeError(element) {
   element.classList.remove('is-invalid');
-  const errorDiv = element.parentNode.querySelector('.error-message');
+  const parent = element.closest('.password-container') || element.parentNode;
+  const errorDiv = parent.querySelector('.error-message');
   if (errorDiv) {
     errorDiv.remove();
   }
