@@ -118,8 +118,8 @@ public class LoginController extends HttpServlet {
     System.out.println("错误信息: " + errorMsg);
 
     if (isValid) {
-      // 登录成功，获取用户订单数据
-      List<Order> orders = orderService.getUserOrders(uId);
+      // 登录成功，获取用户订单数据（包含菜品详情）
+      List<Order> orders = orderService.getUserOrdersWithDetails(uId);
       System.out.println("获取订单数量: " + (orders != null ? orders.size() : "null"));
 
       // 将用户信息和订单数据存入session

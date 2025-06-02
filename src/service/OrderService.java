@@ -44,4 +44,25 @@ public class OrderService {
   public int getUserOrderCount(int userId) {
     return orderDAO.getOrderCountByUserId(userId);
   }
+
+  /**
+   * 获取用户的所有订单，包含订单中的菜肴详情
+   * 
+   * @param userId 用户ID
+   * @return 包含菜肴详情的订单列表
+   */
+  public List<Order> getUserOrdersWithDetails(int userId) {
+    // 获取用户的所有订单
+    List<Order> orders = orderDAO.getOrdersByUserId(userId);
+
+    // 为每个订单获取详情
+    for (Order order : orders) {
+      Order detailedOrder = orderDAO.getOrderWithDetails(order.getOId());
+      if (detailedOrder != null && detailedOrder.getOrderDetails() != null) {
+        order.setOrderDetails(detailedOrder.getOrderDetails());
+      }
+    }
+
+    return orders;
+  }
 }

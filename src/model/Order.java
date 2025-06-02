@@ -1,6 +1,8 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
+import dao.OrderDAO.OrderDetail;
 
 /**
  * 订单实体类，用于封装订单信息
@@ -11,6 +13,7 @@ public class Order {
   private Date oTime; // 订单时间
   private double totalPrice; // 订单总价
   private String status; // 订单状态：处理中、已完成、已取消
+  private List<OrderDetail> orderDetails; // 订单详情列表
 
   // 无参构造函数
   public Order() {
@@ -66,6 +69,14 @@ public class Order {
     this.status = status;
   }
 
+  public List<OrderDetail> getOrderDetails() {
+    return orderDetails;
+  }
+
+  public void setOrderDetails(List<OrderDetail> orderDetails) {
+    this.orderDetails = orderDetails;
+  }
+
   @Override
   public String toString() {
     return "Order{" +
@@ -74,6 +85,7 @@ public class Order {
         ", oTime=" + oTime +
         ", totalPrice=" + totalPrice +
         ", status='" + status + '\'' +
+        ", orderDetails=" + orderDetails +
         '}';
   }
 }
