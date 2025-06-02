@@ -8,14 +8,15 @@ import java.sql.*;
 public class DBUtil {
   // 数据库连接参数
   private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-  private static final String URL = "jdbc:mysql://localhost:3306/089_JDBC?useSSL=false&serverTimezone=UTC&characterEncoding=utf8";
+  private static final String URL = "jdbc:mysql://localhost:3306/089_JDBC?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&useUnicode=true&allowPublicKeyRetrieval=true";
   private static final String USER = "root";
-  private static final String PASSWORD = "root";
+  private static final String PASSWORD = "101895";
 
   // 静态块加载驱动
   static {
     try {
       Class.forName(DRIVER);
+      System.out.println("数据库驱动加载成功");
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
       throw new RuntimeException("数据库驱动加载失败", e);
@@ -29,7 +30,15 @@ public class DBUtil {
    * @throws SQLException 如果连接失败则抛出异常
    */
   public static Connection getConnection() throws SQLException {
-    return DriverManager.getConnection(URL, USER, PASSWORD);
+    try {
+      Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+      System.out.println("数据库连接成功");
+      return conn;
+    } catch (SQLException e) {
+      System.out.println("数据库连接失败: " + e.getMessage());
+      e.printStackTrace();
+      throw e;
+    }
   }
 
   /**

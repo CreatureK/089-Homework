@@ -31,8 +31,31 @@ public class UserDAO {
     Login login = null;
 
     try {
+      System.out.println("开始验证用户: ID=" + uId + ", 密码=" + uPw);
       conn = DBUtil.getConnection();
+      if (conn == null) {
+        System.out.println("ERROR: 数据库连接为null");
+        return null;
+      }
+
+      // 先测试简单查询确认用户是否存在
+      String testSql = "SELECT * FROM user WHERE uId = ?";
+      PreparedStatement testStmt = conn.prepareStatement(testSql);
+      testStmt.setInt(1, uId);
+      ResultSet testRs = testStmt.executeQuery();
+
+      if (testRs.next()) {
+        System.out.println("找到用户ID=" + uId + ", 数据库中密码=" + testRs.getString("uPw") + ", 提交的密码=" + uPw);
+      } else {
+        System.out.println("未找到用户ID=" + uId + ", 请检查数据库连接和用户表");
+      }
+
+      testRs.close();
+      testStmt.close();
+
+      // 执行实际的登录验证
       String sql = "SELECT * FROM user WHERE uId = ? AND uPw = ?";
+      System.out.println("执行SQL: " + sql + " [uId=" + uId + ", uPw=" + uPw + "]");
       pstmt = conn.prepareStatement(sql);
       pstmt.setInt(1, uId);
       pstmt.setString(2, uPw);
@@ -42,11 +65,19 @@ public class UserDAO {
       if (rs.next()) {
         login = new Login();
         login.setUId(rs.getInt("uId"));
+        login.setUName(rs.getString("uName"));
         login.setUPw(rs.getString("uPw"));
         login.setUSchool(rs.getString("uSchool"));
         login.setUDepartment(rs.getString("uDepartment"));
+        System.out.println("用户验证成功: " + login);
+      } else {
+        System.out.println("用户验证失败: 未找到匹配记录, 请检查密码是否正确或数据库字符编码");
       }
     } catch (SQLException e) {
+      System.out.println("用户验证SQL异常: " + e.getMessage());
+      e.printStackTrace();
+    } catch (Exception e) {
+      System.out.println("用户验证其他异常: " + e.getMessage());
       e.printStackTrace();
     } finally {
       DBUtil.close(conn, pstmt, rs);

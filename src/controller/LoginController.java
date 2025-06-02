@@ -66,14 +66,25 @@ public class LoginController extends HttpServlet {
     String uDepartment = request.getParameter("uDepartment");
     String verifyCode = request.getParameter("verifyCode");
 
+    // 调试信息
+    System.out.println("=== 登录调试信息 ===");
+    System.out.println("提交的学号: " + uIdStr);
+    System.out.println("提交的密码: " + uPw + ", 长度: " + (uPw != null ? uPw.length() : "null"));
+    System.out.println("提交的学院: " + uSchool);
+    System.out.println("提交的系: " + uDepartment);
+    System.out.println("提交的验证码: " + verifyCode);
+
     // 获取Session中的验证码
     HttpSession session = request.getSession();
     String sessionVerifyCode = (String) session.getAttribute("verifyCode");
+    System.out.println("会话中的验证码: " + sessionVerifyCode);
+    System.out.println("SessionID: " + session.getId());
 
     // 数据校验
     if (uIdStr == null || uIdStr.trim().isEmpty() ||
         uPw == null || uPw.trim().isEmpty() ||
         verifyCode == null || verifyCode.trim().isEmpty()) {
+      System.out.println("登录信息不完整");
       request.setAttribute("errorMsg", "请填写完整的登录信息");
       request.getRequestDispatcher("/loginFailure.jsp").forward(request, response);
       return;
@@ -82,7 +93,9 @@ public class LoginController extends HttpServlet {
     int uId;
     try {
       uId = Integer.parseInt(uIdStr.trim());
+      System.out.println("转换后的用户ID: " + uId);
     } catch (NumberFormatException e) {
+      System.out.println("用户ID转换失败: " + e.getMessage());
       request.setAttribute("errorMsg", "用户ID必须是数字");
       request.getRequestDispatcher("/loginFailure.jsp").forward(request, response);
       return;
@@ -91,26 +104,31 @@ public class LoginController extends HttpServlet {
     // 封装登录信息
     Login login = new Login();
     login.setUId(uId);
-    login.setUPw(uPw);
+    login.setUPw(uPw.trim()); // 去除密码两端空白字符
     login.setUSchool(uSchool);
     login.setUDepartment(uDepartment);
-    login.setVerifyCode(verifyCode);
+    login.setVerifyCode(verifyCode.trim()); // 去除验证码两端空白字符
 
     // 调用业务逻辑层验证登录
     Object[] result = loginService.validateLogin(login, sessionVerifyCode);
     boolean isValid = (Boolean) result[0];
     String errorMsg = (String) result[1];
 
+    System.out.println("登录校验结果: " + isValid);
+    System.out.println("错误信息: " + errorMsg);
+
     if (isValid) {
       // 登录成功，获取用户订单数据
       List<Order> orders = orderService.getUserOrders(uId);
+      System.out.println("获取订单数量: " + (orders != null ? orders.size() : "null"));
 
       // 将用户信息和订单数据存入session
       session.setAttribute("user", login);
       session.setAttribute("orders", orders);
+      System.out.println("用户和订单已存入session, SessionID: " + session.getId());
 
-      // 跳转到订单列表页面
-      response.sendRedirect(request.getContextPath() + "/allOrders.jsp");
+      // 使用请求转发而非重定向
+      request.getRequestDispatcher("/allOrders.jsp").forward(request, response);
     } else {
       // 登录失败，携带错误信息跳转到失败页面
       request.setAttribute("errorMsg", errorMsg);

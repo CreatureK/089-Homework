@@ -5,6 +5,7 @@ package model;
  */
 public class Login {
   private int uId; // 用户ID
+  private String uName; // 用户姓名
   private String uPw; // 用户密码
   private String uSchool; // 用户所在学院
   private String uDepartment; // 用户所在系
@@ -21,8 +22,9 @@ public class Login {
   }
 
   // 完整参数构造函数
-  public Login(int uId, String uPw, String uSchool, String uDepartment, String verifyCode) {
+  public Login(int uId, String uName, String uPw, String uSchool, String uDepartment, String verifyCode) {
     this.uId = uId;
+    this.uName = uName;
     this.uPw = uPw;
     this.uSchool = uSchool;
     this.uDepartment = uDepartment;
@@ -36,6 +38,14 @@ public class Login {
 
   public void setUId(int uId) {
     this.uId = uId;
+  }
+
+  public String getUName() {
+    return uName;
+  }
+
+  public void setUName(String uName) {
+    this.uName = uName;
   }
 
   public String getUPw() {
@@ -74,6 +84,7 @@ public class Login {
   public String toString() {
     return "Login{" +
         "uId=" + uId +
+        ", uName='" + uName + '\'' +
         ", uPw='" + uPw + '\'' +
         ", uSchool='" + uSchool + '\'' +
         ", uDepartment='" + uDepartment + '\'' +

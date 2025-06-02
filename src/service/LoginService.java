@@ -27,19 +27,45 @@ public class LoginService {
     boolean isValid = false;
     String errorMsg = "";
 
+    System.out.println("===登录服务验证开始===");
+    System.out.println("用户ID：" + login.getUId());
+    System.out.println("密码：" + login.getUPw());
+    System.out.println("学院：" + login.getUSchool());
+    System.out.println("系：" + login.getUDepartment());
+    System.out.println("用户输入的验证码：" + login.getVerifyCode());
+    System.out.println("Session中的验证码：" + sessionVerifyCode);
+
+    // 首先校验用户名和密码
+    Login user = userDAO.validateUser(login.getUId(), login.getUPw());
+
+    if (user == null) {
+      System.out.println("验证失败：用户或密码不正确");
+      errorMsg = "用户名或密码错误";
+      return new Object[] { isValid, errorMsg };
+    }
+
+    System.out.println("用户验证成功：" + user);
+
     // 验证码校验
-    if (sessionVerifyCode == null || !sessionVerifyCode.equalsIgnoreCase(login.getVerifyCode())) {
+    if (sessionVerifyCode == null ||
+        !sessionVerifyCode.equalsIgnoreCase(login.getVerifyCode())) {
+      System.out.println("验证码校验失败");
+      System.out.println("用户输入的验证码：" + login.getVerifyCode());
+      System.out.println("Session中的验证码：" + sessionVerifyCode);
       errorMsg = "验证码错误";
       return new Object[] { isValid, errorMsg };
     }
 
-    // 用户名和密码校验
-    Login user = userDAO.validateUser(login.getUId(), login.getUPw());
-    if (user == null) {
-      errorMsg = "用户名或密码错误";
-    } else {
-      isValid = true;
-    }
+    System.out.println("验证码校验通过");
+
+    // 设置返回的用户对象的信息
+    login.setUName(user.getUName());
+    login.setUSchool(user.getUSchool());
+    login.setUDepartment(user.getUDepartment());
+
+    // 所有校验都通过
+    isValid = true;
+    System.out.println("===登录验证通过===");
 
     return new Object[] { isValid, errorMsg };
   }

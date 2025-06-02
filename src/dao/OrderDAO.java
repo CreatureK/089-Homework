@@ -25,8 +25,13 @@ public class OrderDAO {
     List<Order> orders = new ArrayList<>();
 
     try {
+      System.out.println("查询用户订单: uId=" + uId);
       conn = DBUtil.getConnection();
+
+      // 注意：order是MySQL关键字，需要用反引号
       String sql = "SELECT * FROM `order` WHERE uId = ? ORDER BY oTime DESC";
+      System.out.println("执行SQL: " + sql + " [参数: " + uId + "]");
+
       pstmt = conn.prepareStatement(sql);
       pstmt.setInt(1, uId);
 
@@ -42,8 +47,36 @@ public class OrderDAO {
 
         orders.add(order);
       }
+      System.out.println("查询到" + orders.size() + "条订单记录");
     } catch (SQLException e) {
+      System.out.println("查询订单失败: " + e.getMessage());
       e.printStackTrace();
+
+      // 尝试使用不带反引号的查询作为后备
+      if (orders.isEmpty() && e.getMessage() != null && e.getMessage().contains("order")) {
+        try {
+          if (conn != null && !conn.isClosed()) {
+            String fallbackSql = "SELECT * FROM order_table WHERE uId = ? ORDER BY oTime DESC";
+            System.out.println("尝试后备SQL: " + fallbackSql);
+            pstmt = conn.prepareStatement(fallbackSql);
+            pstmt.setInt(1, uId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+              Order order = new Order();
+              order.setOId(rs.getInt("oId"));
+              order.setUId(rs.getInt("uId"));
+              order.setOTime(rs.getTimestamp("oTime"));
+              order.setTotalPrice(rs.getDouble("totalPrice"));
+              order.setStatus(rs.getString("status"));
+              orders.add(order);
+            }
+            System.out.println("后备查询到" + orders.size() + "条订单记录");
+          }
+        } catch (Exception fallbackEx) {
+          System.out.println("后备查询也失败: " + fallbackEx.getMessage());
+        }
+      }
     } finally {
       DBUtil.close(conn, pstmt, rs);
     }
